@@ -164,7 +164,7 @@ that hears back from a quorum extends its lease. While the lease holds, the lead
 `GET` from local memory. A leader that cannot renew steps down, and a newly elected leader
 refuses to serve until every lease it learned about during the election has expired. Reads
 stay linearizable while costing a single RPC — the same technique CockroachDB and etcd use.
-
+ 
 ### RPC interface
 
 Defined in [`raft.proto`](raft.proto):
