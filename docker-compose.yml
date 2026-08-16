@@ -1,0 +1,74 @@
+# A five node Raft cluster on a private network.
+#
+#   docker compose up --build          # start the cluster
+#   docker compose run --rm client     # interactive key-value shell
+#   docker compose stop node1          # kill the leader and watch failover
+#   docker compose logs -f node1
+
+x-node: &node
+  build: .
+  environment: &peers
+    RAFT_PEERS: node1:50051,node2:50052,node3:50053,node4:50054,node5:50055
+  networks: [raft]
+  restart: unless-stopped
+
+services:
+  node1:
+    <<: *node
+    environment:
+      <<: *peers
+      NODE_ID: "1"
+    ports: ["50051:50051"]
+    volumes: ["node1-data:/app/logs_node_1"]
+
+  node2:
+    <<: *node
+    environment:
+      <<: *peers
+      NODE_ID: "2"
+    ports: ["50052:50052"]
+    volumes: ["node2-data:/app/logs_node_2"]
+
+  node3:
+    <<: *node
+    environment:
+      <<: *peers
+      NODE_ID: "3"
+    ports: ["50053:50053"]
+    volumes: ["node3-data:/app/logs_node_3"]
+
+  node4:
+    <<: *node
+    environment:
+      <<: *peers
+      NODE_ID: "4"
+    ports: ["50054:50054"]
+    volumes: ["node4-data:/app/logs_node_4"]
+
+  node5:
+    <<: *node
+    environment:
+      <<: *peers
+      NODE_ID: "5"
+    ports: ["50055:50055"]
+    volumes: ["node5-data:/app/logs_node_5"]
+
+  client:
+    build: .
+    environment:
+      <<: *peers
+    networks: [raft]
+    profiles: [tools]
+    stdin_open: true
+    tty: true
+    command: python client.py
+
+networks:
+  raft:
+
+volumes:
+  node1-data:
+  node2-data:
+  node3-data:
+  node4-data:
+  node5-data:

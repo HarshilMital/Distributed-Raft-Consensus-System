@@ -1,0 +1,16 @@
+# Node state written at runtime
+logs_node_*/
+.pids/
+cluster.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
